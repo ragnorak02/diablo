@@ -7,7 +7,7 @@ var _selected: int = 0
 var _buttons: Array[Label] = []
 var _panel: PanelContainer
 
-const MENU_ITEMS: Array[String] = ["Resume", "Restart Run", "Quit to Desktop"]
+const MENU_ITEMS: Array[String] = ["Resume", "Quit to Town", "Restart Run", "Quit to Desktop"]
 
 
 func _ready() -> void:
@@ -120,9 +120,12 @@ func _activate_selected() -> void:
 	match _selected:
 		0:  # Resume
 			toggle()
-		1:  # Restart
+		1:  # Quit to Town
+			toggle()
+			GameManager.go_to_town()
+		2:  # Restart
 			toggle()
 			GameManager.start_new_run()
 			get_tree().reload_current_scene()
-		2:  # Quit
+		3:  # Quit to Desktop
 			get_tree().quit()

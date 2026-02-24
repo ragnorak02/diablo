@@ -109,16 +109,16 @@ func _create_procedural_material(tile: TileMesh) -> StandardMaterial3D:
 
 	match tile:
 		TileMesh.FLOOR:
-			mat.albedo_color = Color(0.35, 0.28, 0.22)
+			mat.albedo_color = Color(0.5, 0.42, 0.35)
 			mat.emission_enabled = true
-			mat.emission = Color(0.12, 0.08, 0.05)
-			mat.emission_energy_multiplier = 0.15
+			mat.emission = Color(0.18, 0.12, 0.08)
+			mat.emission_energy_multiplier = 0.4
 		TileMesh.WALL:
-			mat.albedo_color = Color(0.45, 0.35, 0.28)
+			mat.albedo_color = Color(0.58, 0.48, 0.38)
 			mat.roughness = 0.85
 			mat.emission_enabled = true
-			mat.emission = Color(0.15, 0.1, 0.06)
-			mat.emission_energy_multiplier = 0.15
+			mat.emission = Color(0.2, 0.14, 0.08)
+			mat.emission_energy_multiplier = 0.35
 		TileMesh.STAIRS:
 			mat.albedo_color = Color(0.4, 0.35, 0.15)
 			mat.emission_enabled = true
@@ -130,10 +130,10 @@ func _create_procedural_material(tile: TileMesh) -> StandardMaterial3D:
 			mat.emission = Color(0.1, 0.8, 0.3)
 			mat.emission_energy_multiplier = 0.8
 		TileMesh.WALL_CAP:
-			mat.albedo_color = Color(0.55, 0.45, 0.35)
+			mat.albedo_color = Color(0.62, 0.52, 0.42)
 			mat.emission_enabled = true
 			mat.emission = Color(0.3, 0.22, 0.12)
-			mat.emission_energy_multiplier = 0.4
+			mat.emission_energy_multiplier = 0.5
 			mat.normal_enabled = false
 		TileMesh.TORCH:
 			mat.albedo_color = Color(0.35, 0.2, 0.1)
@@ -207,9 +207,9 @@ func create_torch_prop() -> Node3D:
 	var light := OmniLight3D.new()
 	light.position = Vector3(0, 0.8, 0)
 	light.light_color = Color(1.0, 0.7, 0.3)
-	light.light_energy = 1.5
-	light.omni_range = 6.0
-	light.omni_attenuation = 1.2
+	light.light_energy = 3.0
+	light.omni_range = 12.0
+	light.omni_attenuation = 1.0
 	light.shadow_enabled = false  # cheaper
 	torch.add_child(light)
 

@@ -3,7 +3,7 @@ extends Camera3D
 ## Isometric-style camera that follows the player. Diablo-like top-down angle.
 
 @export var target: Node3D
-@export var offset: Vector3 = Vector3(0, 18, 12)
+@export var offset: Vector3 = Vector3(0, 25, 18)
 @export var follow_speed: float = 8.0
 @export var look_ahead: float = 2.0
 

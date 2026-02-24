@@ -223,6 +223,11 @@ func _update_bars() -> void:
 		_xp_bar.value = pd.xp
 
 
+func set_location_text(text: String) -> void:
+	if _floor_label:
+		_floor_label.text = text
+
+
 func _update_labels() -> void:
 	var pd: Dictionary = GameManager.player_data
 	if _health_label:
@@ -231,7 +236,7 @@ func _update_labels() -> void:
 		_mana_label.text = "MP: %d/%d" % [int(pd.mana), int(pd.max_mana)]
 	if _level_label:
 		_level_label.text = "Lv %d  " % pd.level
-	if _floor_label:
+	if _floor_label and _floor_label.text.begins_with("Floor"):
 		_floor_label.text = "Floor %d / %d" % [GameManager.current_floor, GameManager.total_floors]
 	if _gold_label:
 		_gold_label.text = "Gold: %d" % pd.gold
@@ -307,9 +312,11 @@ func _on_show_notification(text: String, type: String) -> void:
 
 
 func _on_show_damage_number(world_pos: Vector3, amount: float, is_crit: bool) -> void:
-	# Get camera to convert world pos to screen
+	# Get camera to convert world pos to screen (3D only)
 	var camera := get_viewport().get_camera_3d()
-	if not camera or camera.is_position_behind(world_pos):
+	if not camera:
+		return
+	if camera.is_position_behind(world_pos):
 		return
 
 	var screen_pos := camera.unproject_position(world_pos)

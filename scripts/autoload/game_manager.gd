@@ -166,5 +166,17 @@ func _on_extraction_completed(_player_id: int, _loot: Array) -> void:
 	run_stats.floors_cleared = max_floor_reached
 
 
+func go_to_town() -> void:
+	get_tree().change_scene_to_file("res://scenes/Town.tscn")
+
+
+func go_to_dungeon_entrance() -> void:
+	get_tree().change_scene_to_file("res://scenes/CathedralEntrance.tscn")
+
+
+func go_to_dungeon_floor() -> void:
+	get_tree().change_scene_to_file("res://scenes/DungeonFloor.tscn")
+
+
 func _on_pvp_kill(_killer_id: int, _victim_id: int) -> void:
 	run_stats.pvp_kills += 1

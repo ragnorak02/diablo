@@ -22,11 +22,12 @@ var spawn_points: Array[Vector3] = []
 var enemy_spawn_points: Array[Vector3] = []
 
 # Mesh loader handles procedural + .glb mesh/material loading
-var _mesh_loader: DungeonMeshLoader
+const MeshLoaderScript = preload("res://scripts/dungeon/dungeon_mesh_loader.gd")
+var _mesh_loader
 
 
 func _ready() -> void:
-	_mesh_loader = DungeonMeshLoader.new()
+	_mesh_loader = MeshLoaderScript.new()
 
 
 func generate_floor(floor_num: int) -> Dictionary:
@@ -200,16 +201,16 @@ func _build_geometry() -> void:
 						wall_tiles.append(world_pos)
 
 	# Build meshes using the loader
-	var floor_mesh := _mesh_loader.get_mesh(DungeonMeshLoader.TileMesh.FLOOR)
-	var floor_mat := _mesh_loader.get_material(DungeonMeshLoader.TileMesh.FLOOR)
-	var wall_mesh := _mesh_loader.get_mesh(DungeonMeshLoader.TileMesh.WALL)
-	var wall_mat := _mesh_loader.get_material(DungeonMeshLoader.TileMesh.WALL)
-	var stairs_mesh := _mesh_loader.get_mesh(DungeonMeshLoader.TileMesh.STAIRS)
-	var stairs_mat := _mesh_loader.get_material(DungeonMeshLoader.TileMesh.STAIRS)
-	var extraction_mesh := _mesh_loader.get_mesh(DungeonMeshLoader.TileMesh.EXTRACTION)
-	var extraction_mat := _mesh_loader.get_material(DungeonMeshLoader.TileMesh.EXTRACTION)
-	var wall_cap_mesh := _mesh_loader.get_mesh(DungeonMeshLoader.TileMesh.WALL_CAP)
-	var wall_cap_mat := _mesh_loader.get_material(DungeonMeshLoader.TileMesh.WALL_CAP)
+	var floor_mesh = _mesh_loader.get_mesh(MeshLoaderScript.TileMesh.FLOOR)
+	var floor_mat = _mesh_loader.get_material(MeshLoaderScript.TileMesh.FLOOR)
+	var wall_mesh = _mesh_loader.get_mesh(MeshLoaderScript.TileMesh.WALL)
+	var wall_mat = _mesh_loader.get_material(MeshLoaderScript.TileMesh.WALL)
+	var stairs_mesh = _mesh_loader.get_mesh(MeshLoaderScript.TileMesh.STAIRS)
+	var stairs_mat = _mesh_loader.get_material(MeshLoaderScript.TileMesh.STAIRS)
+	var extraction_mesh = _mesh_loader.get_mesh(MeshLoaderScript.TileMesh.EXTRACTION)
+	var extraction_mat = _mesh_loader.get_material(MeshLoaderScript.TileMesh.EXTRACTION)
+	var wall_cap_mesh = _mesh_loader.get_mesh(MeshLoaderScript.TileMesh.WALL_CAP)
+	var wall_cap_mat = _mesh_loader.get_material(MeshLoaderScript.TileMesh.WALL_CAP)
 
 	_build_multimesh("Floors", floor_tiles, floor_mesh, floor_mat, Vector3(0, -0.1, 0), true)
 	_build_multimesh("Walls", wall_tiles, wall_mesh, wall_mat, Vector3(0, 1.3, 0), false)
@@ -414,7 +415,7 @@ func _place_torches() -> void:
 			if tx >= 0 and tx < GRID_SIZE.x and ty >= 0 and ty < GRID_SIZE.y:
 				if grid[tx][ty] == TileType.FLOOR:
 					var world_pos := _grid_to_world(Vector2i(tx, ty))
-					var torch := _mesh_loader.create_torch_prop()
+					var torch = _mesh_loader.create_torch_prop()
 					torch.position = world_pos + Vector3(0, 0, 0)
 					add_child(torch)
 					placed += 1
@@ -426,16 +427,16 @@ func _add_lights() -> void:
 	env.name = "Environment"
 	var environment := Environment.new()
 	environment.background_mode = Environment.BG_COLOR
-	environment.background_color = Color(0.02, 0.01, 0.03)
+	environment.background_color = Color(0.05, 0.03, 0.06)
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.ambient_light_color = Color(0.2, 0.15, 0.25)
-	environment.ambient_light_energy = 1.2
+	environment.ambient_light_color = Color(0.35, 0.28, 0.4)
+	environment.ambient_light_energy = 3.0
 	environment.tonemap_mode = Environment.TONE_MAPPER_ACES
 	environment.glow_enabled = true
-	environment.glow_intensity = 0.3
+	environment.glow_intensity = 0.5
 	environment.fog_enabled = true
-	environment.fog_light_color = Color(0.05, 0.03, 0.08)
-	environment.fog_density = 0.005
+	environment.fog_light_color = Color(0.08, 0.05, 0.1)
+	environment.fog_density = 0.002
 	env.environment = environment
 	add_child(env)
 
@@ -448,10 +449,10 @@ func _add_lights() -> void:
 		light.name = "RoomLight"
 		light.position = world_pos + Vector3(0, 2.5, 0)
 		light.light_color = Color(0.9, 0.6, 0.3)  # Warm torch light
-		light.light_energy = 3.0
-		light.omni_range = TILE_SIZE * 8.0
-		light.omni_attenuation = 1.0
-		light.shadow_enabled = true
+		light.light_energy = 8.0
+		light.omni_range = TILE_SIZE * 12.0
+		light.omni_attenuation = 0.8
+		light.shadow_enabled = false
 		add_child(light)
 
 

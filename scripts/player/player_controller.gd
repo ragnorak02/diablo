@@ -36,6 +36,8 @@ var _mesh: MeshInstance3D
 var _attack_area: Area3D
 var _health_regen_timer: float = 0.0
 var _mana_regen_timer: float = 0.0
+var _move_glow_phase: float = 0.0
+var _footstep_timer: float = 0.0
 
 # Invincibility frames during dodge
 var _invincible: bool = false
@@ -60,10 +62,10 @@ func _setup_mesh() -> void:
 	_mesh.mesh = capsule
 
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.2, 0.4, 0.8)
+	mat.albedo_color = Color(0.25, 0.45, 0.85)
 	mat.emission_enabled = true
-	mat.emission = Color(0.1, 0.2, 0.4)
-	mat.emission_energy_multiplier = 0.3
+	mat.emission = Color(0.15, 0.3, 0.6)
+	mat.emission_energy_multiplier = 0.5
 	_mesh.material_override = mat
 
 	_mesh.position.y = 0.9
@@ -108,6 +110,7 @@ func _physics_process(delta: float) -> void:
 	_handle_interact()
 	_handle_potion()
 	_handle_regen(delta)
+	_update_movement_feedback(delta)
 
 	move_and_slide()
 
@@ -394,16 +397,61 @@ func _sync_from_game_manager() -> void:
 	attack_damage = 15.0 + GameManager.player_data.stats.strength * 0.5
 
 
+func _update_movement_feedback(delta: float) -> void:
+	if not _mesh or not _mesh.material_override:
+		return
+	var mat: StandardMaterial3D = _mesh.material_override
+	var speed_2d := Vector2(velocity.x, velocity.z).length()
+
+	if speed_2d > 0.5:
+		_move_glow_phase += delta * 8.0
+		var pulse := 0.5 + 0.45 * sin(_move_glow_phase)  # range 0.5 – 0.95 (capped to ~1.4 via multiplier)
+		mat.emission_energy_multiplier = 0.5 + pulse * 1.0  # 0.5 – 1.4 range
+		_footstep_timer += delta
+		if _footstep_timer >= 0.15:
+			_footstep_timer = 0.0
+			_spawn_footstep()
+	else:
+		_move_glow_phase = 0.0
+		mat.emission_energy_multiplier = lerpf(mat.emission_energy_multiplier, 0.5, delta * 6.0)
+
+
+func _spawn_footstep() -> void:
+	var step := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(0.25, 0.02, 0.25)
+	step.mesh = box
+
+	var mat := StandardMaterial3D.new()
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.no_depth_test = true
+	mat.albedo_color = Color(0.3, 0.5, 1.0, 0.5)
+	mat.emission_enabled = true
+	mat.emission = Color(0.2, 0.4, 0.9)
+	mat.emission_energy_multiplier = 1.0
+	step.material_override = mat
+
+	step.position = global_position + Vector3(0, 0.02, 0)
+	get_parent().add_child(step)
+
+	var tween := step.create_tween()
+	tween.tween_property(mat, "albedo_color:a", 0.0, 0.6)
+	tween.parallel().tween_property(step, "scale", Vector3(0.5, 0.5, 0.5), 0.6)
+	tween.tween_callback(step.queue_free)
+
+
 func _flash_mesh(color: Color) -> void:
 	if _mesh and _mesh.material_override:
 		var mat: StandardMaterial3D = _mesh.material_override
 		var original_emission := mat.emission
+		var original_energy := mat.emission_energy_multiplier
 		mat.emission = color
 		mat.emission_energy_multiplier = 1.5
 		await get_tree().create_timer(0.25).timeout
 		if is_instance_valid(_mesh) and _mesh.material_override:
 			mat.emission = original_emission
-			mat.emission_energy_multiplier = 0.3
+			mat.emission_energy_multiplier = original_energy
 
 
 func _show_attack_arc(is_heavy: bool) -> void:
