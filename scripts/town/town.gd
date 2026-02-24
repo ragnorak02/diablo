@@ -199,15 +199,9 @@ func _ready() -> void:
 	_camera.position_smoothing_enabled = true
 	_camera.position_smoothing_speed = 8.0
 	_camera.zoom = Vector2(2.0, 2.0)
+	_camera.position = _player.position
 	add_child(_camera)
-
-	# --- HUD ---
-	var hud := HUD.new()
-	hud.name = "HUD"
-	add_child(hud)
-
-	# Notify systems
-	EventBus.show_notification.emit("Welcome to Tristram", "default")
+	_camera.make_current()
 
 
 func _process(_delta: float) -> void:

@@ -176,14 +176,9 @@ func _ready() -> void:
 	_camera.position_smoothing_enabled = true
 	_camera.position_smoothing_speed = 8.0
 	_camera.zoom = Vector2(2.5, 2.5)
+	_camera.position = _player.position
 	add_child(_camera)
-
-	# --- HUD ---
-	var hud := HUD.new()
-	hud.name = "HUD"
-	add_child(hud)
-
-	EventBus.show_notification.emit("Cathedral Entrance", "default")
+	_camera.make_current()
 
 
 func _process(_delta: float) -> void:
