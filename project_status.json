@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "macro_phase": "Vertical Slice",
-  "subphase": "Integration Testing",
-  "completion_percent": 85,
-  "current_goal": "Build playable vertical slice with all core systems",
-  "current_task": "Testing and polish — all core systems implemented",
+  "macro_phase": "Phase 2 — Dungeon Generation Hardening",
+  "subphase": "Seed determinism + generation tests",
+  "completion_percent": 22,
+  "current_goal": "Phase 2 — Dungeon Generation Hardening",
+  "current_task": "Seed determinism and dungeon generation tests complete, commit pending",
   "work_mode": "Development",
   "last_code_update": "2026-02-23T16:30:00Z",
   "last_gameplay_update": "2026-02-23T16:30:00Z",
@@ -33,11 +33,11 @@
     "physics": "Godot Physics"
   },
   "testing": {
-    "last_run": null,
-    "pass": 0,
+    "last_run": "2026-02-24T00:00:00Z",
+    "pass": 90,
     "fail": 0,
     "skip": 0,
-    "status": "not_run"
+    "status": "pass"
   },
   "health": {
     "blockers": [],

@@ -20,6 +20,8 @@ var entrance_pos: Vector2i = Vector2i.ZERO
 var exit_pos: Vector2i = Vector2i.ZERO
 var spawn_points: Array[Vector3] = []
 var enemy_spawn_points: Array[Vector3] = []
+var seed_value: int = -1  # -1 = random, >= 0 = deterministic
+var max_floors: int = -1  # -1 = use GameManager.total_floors
 
 # Mesh loader handles procedural + .glb mesh/material loading
 const MeshLoaderScript = preload("res://scripts/dungeon/dungeon_mesh_loader.gd")
@@ -30,7 +32,13 @@ func _ready() -> void:
 	_mesh_loader = MeshLoaderScript.new()
 
 
+func set_seed(s: int) -> void:
+	seed_value = s
+
+
 func generate_floor(floor_num: int) -> Dictionary:
+	if seed_value >= 0:
+		seed(seed_value + floor_num)
 	floor_number = floor_num
 	rooms.clear()
 	spawn_points.clear()
@@ -135,7 +143,8 @@ func _place_stairs() -> void:
 	grid[entrance_pos.x][entrance_pos.y] = TileType.STAIRS_UP
 
 	# Exit (stairs down) in last room
-	if floor_number < GameManager.total_floors:
+	var total: int = max_floors if max_floors >= 0 else GameManager.total_floors
+	if floor_number < total:
 		var last_room := rooms[rooms.size() - 1]
 		exit_pos = last_room.get_center()
 		grid[exit_pos.x][exit_pos.y] = TileType.STAIRS_DOWN
@@ -165,10 +174,14 @@ func _calculate_spawn_points() -> void:
 		var center := room.get_center()
 		var center_world := _grid_to_world(center)
 		enemy_spawn_points.append(center_world)
-		# Add more spawn points around room
+		# Add more spawn points around room, clamped to room boundaries
+		var room_min := _grid_to_world(room.position + Vector2i(1, 1))
+		var room_max := _grid_to_world(room.end - Vector2i(2, 2))
 		for offset in [Vector3(TILE_SIZE * 2, 0, 0), Vector3(-TILE_SIZE * 2, 0, 0),
 						Vector3(0, 0, TILE_SIZE * 2), Vector3(0, 0, -TILE_SIZE * 2)]:
 			var sp: Vector3 = center_world + offset
+			sp.x = clampf(sp.x, room_min.x, room_max.x)
+			sp.z = clampf(sp.z, room_min.z, room_max.z)
 			enemy_spawn_points.append(sp)
 
 
