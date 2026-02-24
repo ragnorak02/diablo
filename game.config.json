@@ -1,0 +1,16 @@
+{
+  "name": "Diablo",
+  "display_name": "DIABLO — Extraction Protocol",
+  "engine": "Godot 4.6",
+  "version": "0.1.0",
+  "genre": "Action RPG / Extraction",
+  "description": "Dark fantasy extraction game. Descend into procedural dungeons, fight enemies, collect loot and trophies, then physically extract back to the entrance. PvP enabled.",
+  "launch": {
+    "executable": "Z:/godot/Godot_v4.6-stable_win64.exe",
+    "args": ["--path", "Z:/Development/amatris/diablo"],
+    "working_directory": "Z:/Development/amatris/diablo"
+  },
+  "tags": ["3D", "extraction", "pvp", "procedural", "dark-fantasy"],
+  "created": "2026-02-23T00:00:00Z",
+  "author": "Studio"
+}

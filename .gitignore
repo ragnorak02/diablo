@@ -1,0 +1,16 @@
+# Godot 4
+.godot/
+*.import
+export_presets.cfg
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Claude
+.claude/
+
+# Build
+builds/
+*.exe
+*.pck

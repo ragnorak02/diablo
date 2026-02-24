@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="12" fill="#1a0a2e"/>
+  <path d="M64 20 L80 50 L110 55 L88 78 L93 108 L64 93 L35 108 L40 78 L18 55 L48 50 Z" fill="#d4af37" stroke="#f0c850" stroke-width="2"/>
+  <text x="64" y="125" text-anchor="middle" fill="#f0c850" font-size="10" font-family="monospace">DIABLO</text>
+</svg>
