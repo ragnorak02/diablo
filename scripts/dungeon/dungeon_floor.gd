@@ -3,10 +3,14 @@ extends Node2D
 ## Stairs up: floor 1 → CathedralEntrance; floor 2+ → reload with floor-1.
 ## Stairs down: hidden on max floor; otherwise reload with floor+1.
 
-var _player: PlayerIso
+const PlayerIsoScript = preload("res://scripts/player/player_iso.gd")
+const IsoTileGridScript = preload("res://scripts/environment/iso_tile_grid.gd")
+const InteractionZoneScript = preload("res://scripts/environment/interaction_zone.gd")
+
+var _player: CharacterBody2D
 var _camera: Camera2D
 var _floor_label: Label
-var _stairs_down_zone: InteractionZone
+var _stairs_down_zone: Area2D
 
 
 func _ready() -> void:
@@ -15,7 +19,7 @@ func _ready() -> void:
 	var current_floor := GameManager.current_floor
 
 	# Floor tiles — very dark stone
-	var floor_tiles := IsoTileGrid.new()
+	var floor_tiles = IsoTileGridScript.new()
 	floor_tiles.name = "FloorTiles"
 	floor_tiles.grid_width = 16
 	floor_tiles.grid_height = 16
@@ -24,7 +28,7 @@ func _ready() -> void:
 	floor_tiles.tile_color_alt = Color(0.09, 0.07, 0.08)
 	add_child(floor_tiles)
 
-	var grid_center := floor_tiles.get_grid_center()
+	var grid_center = floor_tiles.get_grid_center()
 
 	# --- Boundary walls ---
 	var walls := Node2D.new()
@@ -66,7 +70,7 @@ func _ready() -> void:
 	_add_wall_visual(rw, Vector2(8, wall_extent))
 
 	# --- Stairs Up ---
-	var stairs_up := InteractionZone.new()
+	var stairs_up = InteractionZoneScript.new()
 	stairs_up.name = "StairsUp"
 	stairs_up.position = grid_center + Vector2(-60, -wall_extent * 0.35)
 	add_child(stairs_up)
@@ -102,7 +106,7 @@ func _ready() -> void:
 	stairs_up.zone_activated.connect(_on_stairs_up)
 
 	# --- Stairs Down ---
-	_stairs_down_zone = InteractionZone.new()
+	_stairs_down_zone = InteractionZoneScript.new()
 	_stairs_down_zone.name = "StairsDown"
 	_stairs_down_zone.prompt_text = "Press [A] to descend"
 	_stairs_down_zone.position = grid_center + Vector2(60, wall_extent * 0.35)
@@ -151,7 +155,7 @@ func _ready() -> void:
 	add_child(_floor_label)
 
 	# --- Spawn player near stairs up ---
-	_player = PlayerIso.new()
+	_player = PlayerIsoScript.new()
 	_player.name = "Player"
 	_player.position = grid_center + Vector2(-60, -wall_extent * 0.25)
 	add_child(_player)

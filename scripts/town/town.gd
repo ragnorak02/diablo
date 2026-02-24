@@ -2,7 +2,11 @@ extends Node2D
 ## Walkable isometric town (Tristram). Player spawns and moves freely with camera follow.
 ## Walking to cathedral door + pressing interact → CathedralEntrance.tscn
 
-var _player: PlayerIso
+const PlayerIsoScript = preload("res://scripts/player/player_iso.gd")
+const IsoTileGridScript = preload("res://scripts/environment/iso_tile_grid.gd")
+const InteractionZoneScript = preload("res://scripts/environment/interaction_zone.gd")
+
+var _player: CharacterBody2D
 var _camera: Camera2D
 
 
@@ -10,7 +14,7 @@ func _ready() -> void:
 	y_sort_enabled = true
 
 	# Ground tiles — green-brown grass/dirt
-	var ground := IsoTileGrid.new()
+	var ground = IsoTileGridScript.new()
 	ground.name = "GroundTiles"
 	ground.grid_width = 24
 	ground.grid_height = 24
@@ -19,7 +23,7 @@ func _ready() -> void:
 	ground.tile_color_alt = Color(0.18, 0.24, 0.12)
 	add_child(ground)
 
-	var grid_center := ground.get_grid_center()
+	var grid_center = ground.get_grid_center()
 
 	# --- Buildings ---
 	var buildings := Node2D.new()
@@ -63,7 +67,7 @@ func _ready() -> void:
 	_add_wall_segment(cath_walls, Vector2(0, -40), Vector2(100, 6))
 
 	# Cathedral door zone
-	var door_zone := InteractionZone.new()
+	var door_zone = InteractionZoneScript.new()
 	door_zone.name = "DoorZone"
 	door_zone.prompt_text = "Press [A] to enter Cathedral"
 	door_zone.target_scene = "res://scenes/CathedralEntrance.tscn"
@@ -184,7 +188,7 @@ func _ready() -> void:
 	add_child(town_label)
 
 	# --- Spawn player ---
-	_player = PlayerIso.new()
+	_player = PlayerIsoScript.new()
 	_player.name = "Player"
 	_player.position = grid_center + Vector2(0, 60)
 	add_child(_player)

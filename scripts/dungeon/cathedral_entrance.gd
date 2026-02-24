@@ -2,7 +2,11 @@ extends Node2D
 ## Walkable cathedral interior with stairs down to dungeon.
 ## Stairway zone → enters dungeon. Exit door → returns to Town.
 
-var _player: PlayerIso
+const PlayerIsoScript = preload("res://scripts/player/player_iso.gd")
+const IsoTileGridScript = preload("res://scripts/environment/iso_tile_grid.gd")
+const InteractionZoneScript = preload("res://scripts/environment/interaction_zone.gd")
+
+var _player: CharacterBody2D
 var _camera: Camera2D
 
 
@@ -10,7 +14,7 @@ func _ready() -> void:
 	y_sort_enabled = true
 
 	# Floor tiles — dark stone
-	var floor_tiles := IsoTileGrid.new()
+	var floor_tiles = IsoTileGridScript.new()
 	floor_tiles.name = "FloorTiles"
 	floor_tiles.grid_width = 10
 	floor_tiles.grid_height = 14
@@ -19,7 +23,7 @@ func _ready() -> void:
 	floor_tiles.tile_color_alt = Color(0.14, 0.12, 0.10)
 	add_child(floor_tiles)
 
-	var grid_center := floor_tiles.get_grid_center()
+	var grid_center = floor_tiles.get_grid_center()
 
 	# --- Walls ---
 	var walls := Node2D.new()
@@ -96,7 +100,7 @@ func _ready() -> void:
 		pillar.add_child(pvis)
 
 	# --- Stairway zone (descend into dungeon) ---
-	var stairway := InteractionZone.new()
+	var stairway = InteractionZoneScript.new()
 	stairway.name = "StairwayZone"
 	stairway.prompt_text = "Press [A] to descend"
 	stairway.position = grid_center + Vector2(0, -60)
@@ -128,7 +132,7 @@ func _ready() -> void:
 	stairway.zone_activated.connect(_on_stairway_activated)
 
 	# --- Exit door (return to town) ---
-	var exit_door := InteractionZone.new()
+	var exit_door = InteractionZoneScript.new()
 	exit_door.name = "ExitDoorZone"
 	exit_door.prompt_text = "Press [A] to exit to Town"
 	exit_door.target_scene = "res://scenes/Town.tscn"
@@ -161,7 +165,7 @@ func _ready() -> void:
 	add_child(loc_label)
 
 	# --- Spawn player near exit door ---
-	_player = PlayerIso.new()
+	_player = PlayerIsoScript.new()
 	_player.name = "Player"
 	_player.position = grid_center + Vector2(0, 60)
 	add_child(_player)
